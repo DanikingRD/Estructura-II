@@ -1,9 +1,12 @@
 /*
- * ENUNCIADO: Reina vs Torres Enemigas
+ * ENUNCIADO: Tic Tac Toe
  * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
  *              1116614 - Luis Daniel de la Cruz García
  *              1114950 - Elian Gabriel Villegas Báez
- * FECHA: 12/11/2023 <== Fecha de realización
+ *              1115808 - Edward Diaz
+ *              1113902 - Yu jhih Chen Yeh
+ *              1116238 - I Chia Chen Wang
+ * FECHA: 13/11/2023 <== Fecha de realización
  */
 
 #include <iostream>
@@ -64,7 +67,7 @@ int main(void) {
     printBoard(board);
 
     int moves = 0;
-    
+
     while (true) {
 
         if (moves == rows * cols) {
