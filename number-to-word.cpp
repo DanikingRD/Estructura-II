@@ -1,5 +1,5 @@
 /*
- * ENUNCIADO: Reina vs Torres Enemigas
+ * ENUNCIADO: Tic Tac Toe
  * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
  *              1116614 - Luis Daniel de la Cruz García
  *              1114950 - Elian Gabriel Villegas Báez
@@ -82,14 +82,15 @@ int main(void) {
             cin.ignore(1000, '\n');
             printf("\nIngrese un número entre 0 y %.2f: ", MAX - 0.01);
         }
-        double decimal = (input - floor(input)) * 100;
+        string decimalStr = to_string(input).substr(to_string(input).find(".") + 1);
+        double decimal = stod(decimalStr);
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
 
         if (decimal == 0.0) {
             cout << " -> " << output << endl;
         } else {
-            cout << " -> " << output << " con " << decimal << " centavos" << endl;
+            cout << " -> " << output << " con " << decimal << "/100 centavos" << endl;
         }
     }
     return 0;
