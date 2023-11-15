@@ -1,5 +1,5 @@
 /*
- * ENUNCIADO: Tic Tac Toe
+ * ENUNCIADO: Numero a palabra
  * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
  *              1116614 - Luis Daniel de la Cruz García
  *              1114950 - Elian Gabriel Villegas Báez
@@ -9,7 +9,6 @@
  * FECHA: 11/11/2023 <== Fecha de realización
  */
 
-#include <cmath>
 #include <iostream>
 using namespace std;
 
