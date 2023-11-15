@@ -10,6 +10,8 @@
  */
 
 #include <iostream>
+#include <iomanip>
+#include <cmath>
 using namespace std;
 
 const float MAX = 999999999.99F;
@@ -70,26 +72,25 @@ string findNameForNumber(int n) {
 }
 
 int main(void) {
-    printf("Bienvenido al programa un número a palabra\n");
+    cout << "Bienvenido al programa un número a palabra\n";
     while (true) {
-        printf("Ingrese un número entre 0 y %.2f: \n", MAX - 0.01);
+        cout << "Ingrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": \n";
 
         double input;
-        printf("Entrada: ");
+        cout << "Entrada: ";
         while (!(cin >> input) || input < 0 || input > MAX) {
             cin.clear();
             cin.ignore(1000, '\n');
-            printf("\nIngrese un número entre 0 y %.2f: ", MAX - 0.01);
+            cout << "\nIngrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": ";
         }
-        string decimalStr = to_string(input).substr(to_string(input).find(".") + 1);
-        double decimal = stod(decimalStr);
+        int decimal = (int)((input - floor(input)) * 100);
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
 
-        if (decimal == 0.0) {
+        if (decimal == 0) {
             cout << " -> " << output << endl;
         } else {
-            cout << " -> " << output << " con " << decimal << "/100 centavos" << endl;
+            cout << " -> " << output << " con " << decimal << " centavos" << endl;
         }
     }
     return 0;
