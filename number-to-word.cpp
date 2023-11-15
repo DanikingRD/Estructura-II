@@ -56,7 +56,7 @@ string findNameForNumber(int n) {
         }
         return miles + " mil " + cientos;
 
-    } else if (n < MAX) {
+    } else if (n <= MAX) {
         // cubre del 1,000,000 al 999,999,999
         string miles = (n % 1000000 == 0 ? "" : findNameForNumber(n % 1000000));
         string millones = findNameForNumber(n / 1000000);
