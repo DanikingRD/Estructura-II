@@ -40,10 +40,16 @@ void printBoard(char board[rows][cols]) {
     cout << "-------------" << endl;
 }
 
+bool validMove(int row, int col) {
+    bool outOfBounds = row <= 0 || row > rows || col <= 0 || col > cols;
+    bool occupied = board[row - 1][col - 1] != ' ';
+    return !outOfBounds && !occupied;
+}
+
 void readPosition(int& row, int& col) {
     cout << "Ingrese su jugada. (fila, columna): ";
-    while (!(cin >> row >> col) || row <= 0 || row > rows || col <= 0 || col > cols) {
-        cout << "\nEntrada inválida. Ingrese su jugada. (fila, columna): ";
+    while (!(cin >> row >> col) || !validMove(row, col)) {
+        cout << "\nEl movimiento no es válido. Ingrese su jugada nuevamente. (fila, columna): ";
         cin.clear();
         cin.ignore(123, '\n');
     }
@@ -72,44 +78,38 @@ int main(void) {
 
         if (moves == rows * cols) {
             cout << player1 << " y " << player2 << " empataron." << endl;
-            return 0;
+            break;
         }
 
         cout << "Turno de " << (moves % 2 == 0 ? player1 : player2) << endl;
 
         int row, col;
         readPosition(row, col);
-
-        if (board[row - 1][col - 1] != ' ') {
-            cout << "Posicion (" << row << ", " << col << ") ocupada" << endl;
-            continue;
-        }
-
         board[row - 1][col - 1] = (moves % 2 == 0 ? 'X' : 'O');
         printBoard(board);
 
+        bool winner = false;
         for (int i = 0; i < rows; i++) {
-
             // chequear filas
             if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
-                cout << "Ganó " << (moves % 2 == 0 ? player1 : player2) << endl;
-                return 0;
+                winner = true;
             }
             // chequear columnas
             if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-                cout << "Ganó " << (moves % 2 == 0 ? player1 : player2) << endl;
-                return 0;
+                winner = true;
             }
             // chequear diagonal principal
             if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
-                cout << "Ganó " << (moves % 2 == 0 ? player1 : player2) << endl;
-                return 0;
+                winner = true;
             }
             // chequear diagonal secundaria
             if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
-                cout << "Ganó " << (moves % 2 == 0 ? player1 : player2) << endl;
-                return 0;
+                winner = true;
             }
+        }
+        if (winner) {
+            cout << (moves % 2 == 0 ? player1 : player2) << " ha ganado!" << endl;
+            break;
         }
         moves++;
     }
