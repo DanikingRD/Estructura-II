@@ -11,32 +11,23 @@
 
 #include <cmath>
 #include <iostream>
-
 using namespace std;
 
-// Realizar un programa C++ que lea un número real (correspondiente a un monto)
-// y convertir este monto a palabra.
-
-const float LIMIT = 999999999.99F;
-
+const float MAX = 999999999.99F;
 const string base[] = {"", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"};
 const string especiales[] = {"diez",   "once",      "doce",       "trece",     "catorce",
                              "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve"};
 const string decenas[] = {"",        "",        "veinti",  "treinta", "cuarenta", "cicuenta",
                           "sesenta", "setenta", "ochenta", "noventa", "cien"};
-
 const string centenas[] = {"",           "ciento",      "doscientos",  "trescientos", "cuatrocientos",
                            "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
 
 string findNameForNumber(int n) {
-    if (n == 0)
-        return "cero";
-    if (n == 20)
-        return "veinte";
-    if (n == 100)
-        return "cien";
-    if (n == 1000)
-        return "mil";
+    if (n == 0) return "cero";
+    if (n == 20) return "veinte";
+    if (n == 100) return "cien";
+    if (n == 1000) return "mil";
+    if (n == 1000000) return "un millón";
 
     if (n < 10) {
         // cubre del 1 al 10
@@ -50,44 +41,55 @@ string findNameForNumber(int n) {
         return decenas[n / 10] + separador + base[n % 10];
     } else if (n < 1000) {
         // cubre del 100 al 999
+        // omite el cero al final
         string decena = (n % 100 == 0 ? "" : findNameForNumber(n % 100));
         return centenas[n / 100] + ' ' + decena;
-    } else if (n < LIMIT) {
-        string unidad = (n % 1000 == 0 ? "" : findNameForNumber(n % 1000));
-        // para los numeros entre 1000 y 1999, no se usa la palabra "uno" al
-        // principio. e.g 1001 => mil uno, no uno mil
-        return (n < 2000 ? "" : findNameForNumber(n / 1000)) + " mil " + unidad;
+    } else if (n < 1000000) {
+        // cubre del 1,000 al 999,999
+        string miles = n < 2000 ? "" : findNameForNumber(n / 1000);
+        // omite el cero cuando es un numero como 1000, 2000, 3000, etc.
+        string cientos = (n % 1000 == 0 ? "" : findNameForNumber(n % 1000));
+        // reemplazar "uno" con "un" en numeros como 741,000
+        int pos = miles.find("uno");
+        if (pos != string::npos) {
+            miles.replace(pos, 3, "un");
+        }
+        return miles + " mil " + cientos;
+
+    } else if (n < MAX) {
+        // cubre del 1,000,000 al 999,999,999
+        string miles = (n % 1000000 == 0 ? "" : findNameForNumber(n % 1000000));
+        string millones = findNameForNumber(n / 1000000);
+        int pos = millones.find("uno");
+        if (pos != string::npos) {
+            millones.replace(pos, 3, "un");
+            return millones + " millón " + miles;
+        }
+        return millones + " millones " + miles;
     }
     return "Número fuera de rango";
 }
 
-double readInput() {
-    double input;
-    printf("Entrada: ");
-    while (!(cin >> input) || input < 0 || input > LIMIT) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        printf("\nIngrese un número entre 0 y %.2f: ", LIMIT - 0.01);
-    }
-    return input;
-}
-
 int main(void) {
     printf("Bienvenido al programa un número a palabra\n");
-
     while (true) {
-        printf("Ingrese un número entre 0 y %.2f: \n", LIMIT - 0.01);
+        printf("Ingrese un número entre 0 y %.2f: \n", MAX - 0.01);
 
-        double input = readInput();
+        double input;
+        printf("Entrada: ");
+        while (!(cin >> input) || input < 0 || input > MAX) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            printf("\nIngrese un número entre 0 y %.2f: ", MAX - 0.01);
+        }
         double decimal = (input - floor(input)) * 100;
-
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
 
         if (decimal == 0.0) {
-            cout << " * " << output << endl;
+            cout << " -> " << output << endl;
         } else {
-            cout << " * " << output << " con " << decimal << " centavos" << endl;
+            cout << " -> " << output << " con " << decimal << " centavos" << endl;
         }
     }
     return 0;
