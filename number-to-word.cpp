@@ -10,10 +10,8 @@
  */
 
 #include <cmath>
-#include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <stdlib.h>
 
 using namespace std;
 
@@ -98,7 +96,7 @@ int main(void) {
             cout << "Número fuera de rango." << endl;
             continue;
         }
-        
+
         int decimal = (int)((input - floor(input)) * 100);
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
