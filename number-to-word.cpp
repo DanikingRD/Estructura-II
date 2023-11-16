@@ -12,6 +12,7 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <regex>
 
 using namespace std;
 
@@ -72,6 +73,11 @@ string findNameForNumber(int n) {
     return "Número fuera de rango";
 }
 
+bool tieneDosDecimales(const std::string& str) {
+    std::regex regex("\\d+(\\.\\d{1,2})?");
+    return std::regex_match(str, regex);
+}
+
 int main(void) {
     cout << "Bienvenido al programa un número a palabra\n";
     while (true) {
@@ -79,32 +85,30 @@ int main(void) {
 
         string inputString;
         cout << "Entrada: ";
-        while (!(cin >> inputString)) {
+        while (!(cin >> inputString) || (!tieneDosDecimales(inputString))) {
             cin.clear();
             cin.ignore(1000, '\n');
-            cout << "\nIngrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": ";
+            cout << "Valor invalido o fuera de rango.\n";
+            cout << "Ingrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": ";
         }
 
-        if (inputString.find("/") != string::npos) {
-            cout << "No se aceptan fracciones." << endl;
-            continue;
-        }
-        
         double input = stod(inputString);
+        unsigned long long roundedInput = static_cast<unsigned long long>(round(input * 100));
         
         if (input < 0 || input > MAX) {
             cout << "Número fuera de rango." << endl;
             continue;
         }
 
-        int decimal = (int)((input - floor(input)) * 100);
+        int decimal = roundedInput % 100;
+        cout << "Salida: ";
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
 
         if (decimal == 0) {
             cout << " -> " << output << endl;
         } else {
-            cout << " -> " << output << " con " << decimal << " centavos" << endl;
+            cout << " -> " << output << " con " << setw(2) << setfill('0') << decimal << " centavos" << endl;
         }
     }
     return 0;
