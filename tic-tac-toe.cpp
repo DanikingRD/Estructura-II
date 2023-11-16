@@ -64,9 +64,6 @@ void readPosition(int& row, int& col) {
 }
 
 void calculateNextMachineMove(int& row, int& col) {
-    // generate random number
-    int checkRow = generateRange(1, rows);
-    int checkCol = generateRange(1, cols);
 
     // check if the user is about to win to block him
     for (int i = 0; i < rows; i++) {
@@ -106,6 +103,10 @@ void calculateNextMachineMove(int& row, int& col) {
 
         }
     }
+    // generate random number
+    int checkRow = generateRange(1, rows);
+    int checkCol = generateRange(1, cols);
+
     // If the machine can't win or block the player, then generate a random move
     while (!validMove(checkRow, checkCol)) {
         checkRow = generateRange(1, rows);
