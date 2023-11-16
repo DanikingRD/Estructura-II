@@ -9,9 +9,12 @@
  * FECHA: 11/11/2023 <== Fecha de realización
  */
 
-#include <iostream>
-#include <iomanip>
 #include <cmath>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+#include <stdlib.h>
+
 using namespace std;
 
 const float MAX = 999999999.99F;
@@ -76,13 +79,26 @@ int main(void) {
     while (true) {
         cout << "Ingrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": \n";
 
-        double input;
+        string inputString;
         cout << "Entrada: ";
-        while (!(cin >> input) || input < 0 || input > MAX) {
+        while (!(cin >> inputString)) {
             cin.clear();
             cin.ignore(1000, '\n');
             cout << "\nIngrese un número entre 0 y " << fixed << setprecision(2) << MAX - 0.01 << ": ";
         }
+
+        if (inputString.find("/") != string::npos) {
+            cout << "No se aceptan fracciones." << endl;
+            continue;
+        }
+        
+        double input = stod(inputString);
+        
+        if (input < 0 || input > MAX) {
+            cout << "Número fuera de rango." << endl;
+            continue;
+        }
+        
         int decimal = (int)((input - floor(input)) * 100);
         string output = findNameForNumber((int)input);
         output[0] = toupper(output[0]);
