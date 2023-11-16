@@ -68,12 +68,49 @@ void calculateNextMachineMove(int& row, int& col) {
     int checkRow = generateRange(1, rows);
     int checkCol = generateRange(1, cols);
 
-    // check if the position is valid
+    // check if the user is about to win to block him
+    for (int i = 0; i < rows; i++) {
+        int movesPlayer1 = 0;
+        int movesMachine = 0;
+        for (int j = 0; j < cols; j++) {
+            // check if there are 2 X or 2 O in a row
+            if (board[i][j] == 'X') {
+                movesPlayer1++;
+            }
+            if (board[i][j] == 'O') {
+                movesMachine++;
+            }
+            // check if there are 2 X or 2 O in a column
+            if (board[j][i] == 'X') {
+                movesPlayer1++;
+            }
+            if (board[j][i] == 'O') {
+                movesMachine++;
+            }
+            // check if there are 2 X or 2 O in the diagonal
+            if (i == j && board[i][j] == 'X') {
+                movesPlayer1++;
+            }
+            if (i == j && board[i][j] == 'O') {
+                movesMachine++;
+            }
+            if (movesMachine == 2 || movesPlayer1 == 2) {
+                // if the machine can win, then do it
+                // if the player is about to win, then block him
+                if (validMove(i + 1, j + 1)) {
+                    row = i + 1;
+                    col = j + 1;
+                    return;
+                }
+            }
+
+        }
+    }
+    // If the machine can't win or block the player, then generate a random move
     while (!validMove(checkRow, checkCol)) {
         checkRow = generateRange(1, rows);
         checkCol = generateRange(1, cols);
     }
-
     row = checkRow;
     col = checkCol;
 }
