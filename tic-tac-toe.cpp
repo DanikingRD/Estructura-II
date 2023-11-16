@@ -40,6 +40,13 @@ void printBoard(char board[rows][cols]) {
     cout << "-------------" << endl;
 }
 
+int generateRange(int min, int max) {
+    // - `rand` genera un entero aleatorio ej 12346567
+    // - `min` y `max` se utilizan para 'convertir' el numero que devuelva al rango [min ,max]
+    // - ej: [76312317, 56312310, 35678513, 17352184] -> [6, 5, 3, 1]
+    return min + (rand() % max);
+}
+
 bool validMove(int row, int col) {
     bool outOfBounds = row <= 0 || row > rows || col <= 0 || col > cols;
     bool occupied = board[row - 1][col - 1] != ' ';
@@ -56,24 +63,23 @@ void readPosition(int& row, int& col) {
     cout << " -> " << row << ", " << col << endl;
 }
 
-int main(void) {
+void calculateNextMachineMove(int& row, int& col) {
+    // generate random number
+    int checkRow = generateRange(1, rows);
+    int checkCol = generateRange(1, cols);
 
-    cout << "Bienvenidos a Tic Tac Toe" << endl;
+    // check if the position is valid
+    while (!validMove(checkRow, checkCol)) {
+        checkRow = generateRange(1, rows);
+        checkCol = generateRange(1, cols);
+    }
 
-    string player1, player2;
+    row = checkRow;
+    col = checkCol;
+}
 
-    cout << "Ingrese el nombre del jugador 1: ";
-    cin >> player1;
-
-    cout << "Ingrese el nombre del jugador 2: ";
-    cin >> player2;
-
-    cout << " -> " << player1 << " es X" << endl;
-    cout << " -> " << player2 << " es O" << endl;
-    printBoard(board);
-
+void gameLoop(string player1, string player2, bool againstPlayer) {
     int moves = 0;
-
     while (true) {
 
         if (moves == rows * cols) {
@@ -84,8 +90,22 @@ int main(void) {
         cout << "Turno de " << (moves % 2 == 0 ? player1 : player2) << endl;
 
         int row, col;
-        readPosition(row, col);
+
+        // if this is turn of player1:
+        if (moves % 2 == 0) {
+            readPosition(row, col);
+        } else {
+            // if this is turn of player2:
+            if (againstPlayer) {
+                readPosition(row, col);
+            } else {
+                calculateNextMachineMove(row, col);
+            }
+        }
         board[row - 1][col - 1] = (moves % 2 == 0 ? 'X' : 'O');
+
+        // anunciar jugada
+        cout << " -> " << (moves % 2 == 0 ? player1 : player2) << " jugó en la posición " << row << ", " << col << endl;
         printBoard(board);
 
         bool winner = false;
@@ -112,5 +132,64 @@ int main(void) {
             break;
         }
         moves++;
+    }
+}
+
+void play(int gameMode) {
+
+    string player1, player2;
+
+    if (gameMode == 1) {
+        // Jugar contra un amigo
+        cout << "Ingrese el nombre del jugador 1: ";
+        cin >> player1;
+        cout << "Ingrese el nombre del jugador 2: ";
+        cin >> player2;
+    }
+    if (gameMode == 2) {
+        // Jugar contra la maquina
+        cout << "Ingrese su nombre: ";
+        cin >> player1;
+        player2 = "la máquina";
+    }
+
+    printBoard(board);
+
+    cout << " -> " << player1 << " es X" << endl;
+    cout << " -> " << player2 << " es O" << endl;
+    gameLoop(player1, player2, gameMode == 1);
+
+    // reset the table after the game is over
+    // in case the user wants to play again
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            board[i][j] = ' ';
+        }
+    }
+}
+
+int main(void) {
+
+    cout << "Bienvenidos a Tic Tac Toe" << endl;
+
+    while (true) {
+        cout << "Presione:"
+             << "\n0. Para salir"
+             << "\n1. Para jugar contra un amigo"
+             << "\n2. Para jugar contra la maquina" << endl;
+
+        int option;
+        while (!(cin >> option) || option < 0 || option > 2) {
+            cout << "Opcion inválida. Intente de nuevo: ";
+            cin.clear();
+            cin.ignore(123, '\n');
+        }
+
+        if (option == 0) {
+            cout << "Gracias por jugar!" << endl;
+            break;
+        }
+
+        play(option);
     }
 }
