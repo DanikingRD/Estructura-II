@@ -101,8 +101,7 @@ int main(void) {
         }
 
         int decimal = roundedInput % 100;
-        cout << "Salida: ";
-        string output = findNameForNumber((int)input);
+        string output = findNameForNumber(roundedInput / 100);
         output[0] = toupper(output[0]);
 
         if (decimal == 0) {
