@@ -18,12 +18,12 @@ using namespace std;
 const int MAX = 52;
 string symbols[] = {"♠️", "♥️", "♦️", "♣️"};
 
-struct Carta {
+struct Card {
     string symbol;
     int number;
 };
 
-Carta cartas[MAX];
+Card cartas[MAX];
 
 void poblarCartas() {
     int i = 0;
@@ -47,34 +47,44 @@ void printCardArray() {
     }
 }
 
-void swap(Carta& a, Carta& b) {
-    Carta temp = a;
-    a = b;
-    b = temp;
-}
-
-void shuffle(Carta arr[], int separatedBy, int arrSize = MAX) {
+bool containsCard(Card* arr, int arrSize, Card card) {
     for (int i = 0; i < arrSize; i++) {
-        // int random = rand() % arrSize;
-        // generate a random number of the remaining cards
-        int random = rand() % (arrSize - i) + i;
-        int limit = i + separatedBy;
-        if (limit > arrSize) {
-            limit = arrSize;
-        }
-        Carta randomCard = arr[random];
-        bool found = false;
-        for (int j = i + 1; j < limit; j++) {
-            if (arr[j].number == randomCard.number) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            swap(arr[i], arr[random]);
+        if (arr[i].symbol == card.symbol && arr[i].number == card.number) {
+            return true;
         }
     }
+    return false;
 }
+
+bool containsValue(int* arr, int n, int value) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void shuffle(Card* cards, int n) {
+
+    Card output[MAX];
+    int aux[n];
+
+    for (int i = 0; i < MAX; i++) {
+        Card randomCard = cards[rand() % MAX];
+        while (containsCard(output, i, randomCard) || containsValue(aux, n, randomCard.number)) {
+            randomCard = cards[rand() % MAX];
+        }
+
+        output[i] = randomCard;
+        aux[i % n] = randomCard.number;
+    }
+
+    for (int i = 0; i < MAX; i++) {
+        cards[i] = output[i];
+    }
+}
+
 int getInt() {
     int n;
     while (!(cin >> n)) {
@@ -104,6 +114,7 @@ int main() {
     cout << "Bienvenido al programa cartas" << endl;
     poblarCartas();
     srand(time(NULL));
+
     bool quit = false;
     while (!quit) {
         cout << "Ingrese: " << endl;
