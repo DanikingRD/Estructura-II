@@ -30,6 +30,7 @@ std::string string_reversing(std::string word)
     }
     return reversed;
 }
+
 /// @brief Se encargará de modificar el archivo como un conjunto y luego introducirá el texto en conjunto
 /// @param inputNameFile
 /// @param outputNameFile
@@ -130,7 +131,7 @@ void Manipulation(void)
         }
     }
 
-    // PRegunta si el ususario quiere cambiar el nombre del archivo de salida
+    // Pregunta si el ususario quiere cambiar el nombre del archivo de salida
     std::cout << "Desea asignar un nombre al archivo de salida? [y, N]: ";
     std::cin >> confirmation;
     if (tolower(confirmation) == 'y')
@@ -150,6 +151,8 @@ void Manipulation(void)
     std::cout << "\nEl archivo manipulado con palabras en reverso está en: '" << outputNameFile << "'"<< std::endl;
 }
 
+/// @brief funcion "main"
+/// @brief Inicializa el programa
 int main(int argc, char const *argv[])
 {
     std::cout << "\n Inicializando programa...\n"
