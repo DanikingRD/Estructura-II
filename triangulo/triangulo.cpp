@@ -10,19 +10,23 @@
  *              1116238 - I Chia Chen Wang
  * FECHA: 12/12/2023 <== Fecha de realización
  */
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 using namespace std;
 
+// Definición de tipos para mayor claridad en el código
 typedef sf::Vector2f Vec2;
 typedef sf::RenderWindow Window;
 
+// Configuración inicial de la ventana
 void setup(Window* w) {
     w->create(sf::VideoMode(1280, 720), "Triangulo");
     w->setFramerateLimit(60);
 }
 
+// Dibuja un vértice en la ventana con un color específico
 void drawVertex(Vec2 p, sf::Color color, Window* window) {
     sf::VertexArray vertex(sf::Points, 1);
     vertex[0].position = p;
@@ -30,6 +34,7 @@ void drawVertex(Vec2 p, sf::Color color, Window* window) {
     window->draw(vertex);
 }
 
+// Maneja los eventos de la ventana, en este caso, se cierra la ventana al hacer clic en el botón de cerrar
 void pollEvents(Window* w) {
     sf::Event e;
     while (w->pollEvent(e)) {
@@ -52,16 +57,19 @@ int main(void) {
         int windowHeight = w.getSize().y;
         int distance = 320;
 
+        // Definición de los vértices del triángulo y un punto exterior
         Vec2 v1 = Vec2(windowWidth / 2.0, windowHeight / 2.0 - distance);
         Vec2 v2 = Vec2(windowWidth / 2.0 + distance, windowHeight / 2.0 + distance);
         Vec2 v3 = Vec2(windowWidth / 2.0 - distance, windowHeight / 2.0 + distance);
         Vec2 vExterior = Vec2(windowWidth / 2.0, windowHeight / 2.0 + distance * 2);
 
+        // Dibuja los vértices del triángulo y el punto exterior
         drawVertex(v1, sf::Color::Red, &w);
         drawVertex(v2, sf::Color::Green, &w);
         drawVertex(v3, sf::Color::Blue, &w);
         drawVertex(vExterior, sf::Color::Yellow, &w);
 
+        // Algoritmo de generación de puntos para formar un fractal
         for (int i = 0; i < 30000; i++) {
             int dice = rand() % 3 + 1;
 
@@ -74,12 +82,15 @@ int main(void) {
                 vRandom = Vec2((v3.x + vExterior.x) / 2, (v3.y + vExterior.y) / 2);
             }
 
+            // Colores para los puntos generados
             sf::Color colors[2] = {sf::Color::Yellow, sf::Color::Green};
 
-            drawVertex(vRandom, colors[i % 5], &w);
+            // Dibuja el punto aleatorio con un color específico
+            drawVertex(vRandom, colors[i % 2], &w);
 
             vExterior = vRandom;
 
+            // Actualiza la ventana cada cierto número de iteraciones para mostrar el progreso
             if (i % 12 == 0) {
                 w.display();
             }
