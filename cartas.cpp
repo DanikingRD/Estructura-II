@@ -38,10 +38,29 @@ void poblarCartas() {
     }
 }
 
-void printCardArray(Card* arr) {
-    // imprimir las 52 unidades, didividas en 4 grupos de 13
+void printCardArray(const Card* arr) {
     for (int i = 0; i < MAX; i++) {
-        cout << arr[i].symbol << arr[i].number << " ";
+        cout << arr[i].symbol;
+        if (arr[i].number >= 2 && arr[i].number <= 10) {
+            cout << arr[i].number;
+        } else {
+            switch (arr[i].number) {
+            case 1:
+                cout << "A";
+                break;
+            case 11:
+                cout << "J";
+                break;
+            case 12:
+                cout << "Q";
+                break;
+            case 13:
+                cout << "K";
+                break;
+            }
+        }
+        cout << " ";
+
         if ((i + 1) % 13 == 0) {
             cout << endl;
         }
@@ -79,6 +98,7 @@ void shuffle(Card* arr) {
         arr[i] = output[i];
     }
 }
+
 void makeShuffle() {
     cout << endl << "Cartas antes de barajar:" << endl;
     printCardArray(cards);
