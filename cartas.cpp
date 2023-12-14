@@ -65,10 +65,21 @@ void shuffle(Card* arr) {
     for (int i = 0; i < MAX; i++) {
         int j;
         Card randomCard;
-        do {
+        // do {
+        //     j = rand() % MAX;
+        //     randomCard = cards[j];
+        //     if (i == 50) {
+        //         break;
+        //     }
+        // } while (arrayContains(aux, 6, randomCard.number) || inserted[j]);
+
+        while (true) {
             j = rand() % MAX;
             randomCard = cards[j];
-        } while (arrayContains(aux, 6, randomCard.number) || inserted[j]);
+            if (!arrayContains(aux, 6, randomCard.number) && !inserted[j]) {
+                break;
+            }
+        }
 
         output[i] = randomCard;
         inserted[j] = true;
