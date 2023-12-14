@@ -1,7 +1,7 @@
 /*
- * ENUNCIADO: Crear un programa en c++ que permita barajar las 52 cartas
- * de un casino, en donde una carta del mismo tipo este separada de otra
- * almenos 6 cartas de distancia.
+ * ENUNCIADO: Inicie colocando tres puntos de manera de esos puntos determinen un triangulo
+ * equilátero o isosceles. Coloque un cuarto punto fuera del triángulo imaginario que
+ * forman los anteriores tres puntos (como vértices de triángulo).
  * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
  *              1116614 - Luis Daniel de la Cruz García
  *              1114950 - Elian Gabriel Villegas Báez
