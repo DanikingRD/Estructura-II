@@ -17,6 +17,7 @@ using namespace std;
 
 const int MAX = 52;
 string symbols[] = {"♠️", "♥️", "♦️", "♣️"};
+const int SEPARATION = 6;
 
 struct Card {
     string symbol;
@@ -68,7 +69,7 @@ void printCardArray(const Card* arr) {
 }
 
 bool arrayContains(int* arr, int size, int n) {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < size; i++) {
         if (arr[i] == n) {
             return true;
         }
@@ -78,19 +79,19 @@ bool arrayContains(int* arr, int size, int n) {
 
 void shuffle(Card* arr) {
     Card output[MAX] = {};
-    int aux[6] = {};
+    int aux[SEPARATION] = {};
 
     for (int i = 0; i < MAX; i++) {
         int j = rand() % MAX;
         Card randomCard = cards[j];
 
-        while (cards[j].number == 0 || arrayContains(aux, 6, randomCard.number)) {
+        while (cards[j].number == 0 || arrayContains(aux, SEPARATION, randomCard.number)) {
             j = rand() % MAX;
             randomCard = cards[j];
         }
 
         output[i] = randomCard;
-        aux[i % 6] = randomCard.number;
+        aux[i % SEPARATION] = randomCard.number;
         cards[j].number = 0;
     }
 
