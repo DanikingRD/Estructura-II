@@ -81,7 +81,6 @@ void changedName(const std::string &inputNameFile)
         outputNameFile += ".txt";
         std::ofstream outputFile(outputNameFile);
         outputFile.open(outputNameFile);
-        std::string temp =outputNameFile; 
         if (!outputFile.is_open())
         {
             std::cout << std::endl
