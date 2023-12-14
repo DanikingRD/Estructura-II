@@ -41,9 +41,8 @@ std::string bulkReversing(const std::string &inputNameFile, const std::string &o
     std::stringstream content;
 
     std::ifstream inputFile;
-    inputFile.open(inputNameFile);
     std::ofstream outputFile;
-    outputFile.open(outputNameFile);
+    inputFile.open(inputNameFile);
 
     while (inputFile.get(character))
     {
@@ -62,6 +61,9 @@ std::string bulkReversing(const std::string &inputNameFile, const std::string &o
         }
     }
     inputFile.close();
+
+    outputFile.open(outputNameFile);
+    outputFile.clear();
     outputFile << content.str();
     outputFile.close();
 
@@ -70,13 +72,13 @@ std::string bulkReversing(const std::string &inputNameFile, const std::string &o
 
 /// @brief Funcion en caso de que el usuario decida cambiar el nombre del archivo de salida.
 /// @param inputNameFile
-void changedName(const std::string &inputNameFile)
+void createNewFile(const std::string &inputNameFile)
 {
     std::string outputNameFile;
     std::ofstream outputFile;
     while (!outputFile.is_open())
     {
-        std::cout << "Please write your desired name for the file: ";
+        std::cout << "Porfavor eliga el nombre para su archivo de salida: ";
         std::cin >> outputNameFile;
         outputNameFile += ".txt";
         std::ofstream outputFile(outputNameFile);
@@ -120,8 +122,8 @@ void Manipulation(void)
         if (!inputFile.is_open())
         {
             std::cout << std::endl
-                      << "\nError opening input file: " << inputNameFile << std::endl;
-            std::cout << "Remember it needs to be a valid .txt (don't write .txt)" << std::endl;
+                      << "\nError abriendo el archivo: " << inputNameFile << std::endl;
+            std::cout << "Recuerde que de be ser un archivo .txt (no escriba .txt)" << std::endl;
         }
         else // Si es un nombre correcto, cerrará el archivo para no tener inconvenientes futuros con la apertura y el cerrado
         {
@@ -133,18 +135,18 @@ void Manipulation(void)
     // Pregunta si el ususario quiere cambiar el nombre del archivo de salida
     while (true)
     {
-        std::cout << "Desea asignar un nombre al archivo de salida? [y, N]: ";
+        std::cout << "Desea asignar crear un nuevo archivo para la salida? [Y, N]: ";
         std::cin >> confirmation;
         if (tolower(confirmation) == 'y')
         {
-            changedName(inputNameFile);
+            createNewFile(inputNameFile);
             exit(0);
         }
         else if (tolower(confirmation == 'n'))
         {
-            std::cout << "\nArchivo fue nombrado por defecto 'output.txt'\n"
+            std::cout << "\nEl archivo de entrada va a ser reutilizado\n"
                       << std::endl;
-            outputNameFile = "output.txt";
+            outputNameFile = inputNameFile;
             break;
         }
         else
@@ -153,7 +155,6 @@ void Manipulation(void)
                       << std::endl;
         }
     }
-    std::ofstream outputFile(outputNameFile);
 
     bulkReversing(inputNameFile, outputNameFile);
 
