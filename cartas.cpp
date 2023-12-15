@@ -19,17 +19,21 @@ const int MAX = 52;
 string symbols[] = {"♠️", "♥️", "♦️", "♣️"};
 const int SEPARATION = 6;
 
+// Estructura para representar una carta
 struct Card {
     string symbol;
     int number;
 };
 
+// Arreglo para almacenar las cartas
 Card cards[MAX];
+
+// Función para leer un entero desde la entrada estándar
 int readInt();
 
+// Función para poblar el arreglo de cartas con todas las combinaciones posibles
 void poblarCartas() {
     int i = 0;
-    // asignar cada simbolo a 13 cartas
     for (int j = 0; j < 4; j++) {
         for (int k = 1; k <= 13; k++) {
             cards[i].symbol = symbols[j];
@@ -39,6 +43,7 @@ void poblarCartas() {
     }
 }
 
+// Función para imprimir un arreglo de cartas
 void printCardArray(const Card* arr) {
     for (int i = 0; i < MAX; i++) {
         cout << arr[i].symbol;
@@ -68,6 +73,7 @@ void printCardArray(const Card* arr) {
     }
 }
 
+// Función para verificar si un número está contenido en un arreglo
 bool arrayContains(int* arr, int size, int n) {
     for (int i = 0; i < size; i++) {
         if (arr[i] == n) {
@@ -77,6 +83,7 @@ bool arrayContains(int* arr, int size, int n) {
     return false;
 }
 
+// Función para barajar las cartas
 void shuffle(Card* arr) {
     Card output[MAX] = {};
     int aux[SEPARATION] = {};
@@ -100,14 +107,16 @@ void shuffle(Card* arr) {
     }
 }
 
+// Función para mostrar el estado de las cartas antes y después de barajar
 void makeShuffle() {
     cout << endl << "Cartas antes de barajar:" << endl;
     printCardArray(cards);
     shuffle(cards);
-    cout << endl << "Cartas despues de barajar:" << endl;
+    cout << endl << "Cartas después de barajar:" << endl;
     printCardArray(cards);
 }
 
+// Función para leer un entero de la entrada estándar con manejo de errores
 int readInt() {
     int n;
     while (!(cin >> n)) {
@@ -118,10 +127,11 @@ int readInt() {
     return n;
 }
 
+// Función principal
 int main() {
-    cout << "Bienvenido al programa cartas" << endl;
-    poblarCartas();
     srand(time(NULL));
+    cout << "Bienvenido al programa de cartas" << endl;
+    poblarCartas();
 
     bool quit = false;
     while (!quit) {
@@ -129,7 +139,7 @@ int main() {
         cout << "0. Para salir." << endl;
         cout << "1. Para mostrar las cartas." << endl;
         cout << "2. Para barajar las cartas." << endl;
-        cout << "Opcion: ";
+        cout << "Opción: ";
         int option = readInt();
         switch (option) {
         case 0:
