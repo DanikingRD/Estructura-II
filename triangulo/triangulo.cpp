@@ -74,12 +74,10 @@ int main(void) {
             int dice = rand() % 3 + 1;
 
             Vec2 vRandom;
-            if (dice == 1) {
-                vRandom = Vec2((v1.x + vExterior.x) / 2, (v1.y + vExterior.y) / 2);
-            } else if (dice == 2) {
-                vRandom = Vec2((v2.x + vExterior.x) / 2, (v2.y + vExterior.y) / 2);
-            } else {
-                vRandom = Vec2((v3.x + vExterior.x) / 2, (v3.y + vExterior.y) / 2);
+            switch (dice) {
+                case 1: vRandom = Vec2((v1.x + vExterior.x) / 2, (v1.y + vExterior.y) / 2); break;
+                case 2: vRandom = Vec2((v2.x + vExterior.x) / 2, (v2.y + vExterior.y) / 2); break;
+                default: vRandom = Vec2((v3.x + vExterior.x) / 2, (v3.y + vExterior.y) / 2); break;
             }
 
             // Colores para los puntos generados
