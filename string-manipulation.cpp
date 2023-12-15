@@ -141,7 +141,7 @@ void Manipulation(void)
             createNewFile(inputNameFile);
             exit(0);
         }
-        else if (confirmation == "n" || confirmation == "Y")
+        else if (confirmation == "n" || confirmation == "N")
         {
             std::cout << "\nEl archivo de entrada va a ser reutilizado\n"
                       << std::endl;
