@@ -15,7 +15,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <ctype.h>
 #include <sstream>
 
 /// @brief Esta funcion se encarga de invertir cada palabra de forma singular
@@ -113,7 +112,7 @@ void Manipulation(void)
     // Bucle en caso de que el usuario no introduzca un valor valido
     while (!inputFile.is_open())
     {
-        std::cout << "\nPorfavor ingrese el nombre del archivo. \nNo ponga el tipo de extension(.txt)\nEste programa solo puede reescribir archivos '.txt'\n\nNombre: ";
+        std::cout << "\nPorfavor ingrese el nombre del archivo. \nNo ponga el tipo de extension(.txt)\n Recuerde que su archivo debe terminar con un punto\nEste programa solo puede reescribir archivos '.txt'\n\nNombre: ";
         std::cin >> inputNameFile;
         inputNameFile += ".txt";
         std::ifstream inputFile(inputNameFile);
