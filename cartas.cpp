@@ -129,7 +129,7 @@ int readInt() {
 
 // Función principal
 int main() {
-    srand(time(NULL));
+    srand((unsigned int)clock());
     cout << "Bienvenido al programa de cartas" << endl;
     poblarCartas();
 
