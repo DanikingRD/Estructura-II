@@ -51,34 +51,22 @@ void printCardArray(const Card* arr) {
             cout << arr[i].number;
         } else {
             switch (arr[i].number) {
-            case 1:
-                cout << "A";
-                break;
-            case 11:
-                cout << "J";
-                break;
-            case 12:
-                cout << "Q";
-                break;
-            case 13:
-                cout << "K";
-                break;
+            case 1:  cout << "A"; break;
+            case 11: cout << "J"; break;
+            case 12: cout << "Q"; break;
+            case 13: cout << "K"; break;
             }
         }
         cout << " ";
 
-        if ((i + 1) % 13 == 0) {
-            cout << endl;
-        }
+        if ((i + 1) % 13 == 0) cout << endl;
     }
 }
 
 // Función para verificar si un número está contenido en un arreglo
 bool arrayContains(int* arr, int size, int n) {
     for (int i = 0; i < size; i++) {
-        if (arr[i] == n) {
-            return true;
-        }
+        if (arr[i] == n) return true;
     }
     return false;
 }
@@ -102,9 +90,7 @@ void shuffle(Card* arr) {
         cards[j].number = 0;
     }
 
-    for (int i = 0; i < MAX; i++) {
-        arr[i] = output[i];
-    }
+    for (int i = 0; i < MAX; i++) arr[i] = output[i];
 }
 
 // Función para mostrar el estado de las cartas antes y después de barajar
