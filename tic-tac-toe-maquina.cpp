@@ -54,35 +54,84 @@ void printBoard(char board[rows][cols]) {
  */
 int genRange(int min, int max) { return min + (rand() % max); }
 
-bool validPlay(int row, int col) {
-    bool outOfBounds = row <= 0 || row > rows || col <= 0 || col > cols;
-    bool occupied = board[row - 1][col - 1] != ' ';
-    return !outOfBounds && !occupied;
+bool isOcuppied(int pos) {
+    int row = (pos - 1) / 3;
+    int col = (pos - 1) % 3;
+    return board[row][col] != ' ';
 }
 
 int readPos() {
     int pos = readInt("Ingrese su jugada: ");
-    while (pos < 1 || pos > 9) {
+    while (pos < 1 || pos > 9 || isOcuppied(pos)) {
         cout << "La posicion ingresada no es valida. Ingrese nuevamente: ";
         pos = readInt("Ingrese su jugada: ");
     }
+    return pos;
+}
 
+int generatePos() {
+    int pos = genRange(1, 9);
+    while (isOcuppied(pos)) {
+        pos = genRange(1, 9);
+    }
+    return pos;
+}
 
+void setPlay(string name, int pos, char player) {
+    int row = (pos - 1) / 3;
+    int col = (pos - 1) % 3;
+    board[row][col] = player;
+    // anunciar jugada
+    cout << " -> " << name << " jugó en la casilla " << pos << endl;
 }
 
 void play(char board[rows][cols], string player, string bot) {
     int moves = 0;
+    bool isOver = false;
+    while (!isOver) {
 
-    while (moves < rows * cols) {
-        cout << "Turno de " << (moves % 2 == 0 ? player : bot) << endl;
+        bool playerTurn = moves % 2 == 0;
+        cout << "Turno de " << (playerTurn ? player : bot) << endl;
 
         int pos;
-        if (moves % 2 == 0) {
-            // turno del jugador
-
+        if (playerTurn) {
+            pos = readPos();
         } else {
             // turno de la maquina
+            pos = generatePos();
         }
+
+        setPlay(playerTurn ? player : bot, pos, playerTurn ? 'X' : 'O');
+
+        for (int i = 0; i < rows; i++) {
+            // chequear filas
+            if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
+                isOver = true;
+            }
+            // chequear columnas
+            if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
+                isOver = true;
+            }
+            // chequear diagonal principal
+            if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+                isOver = true;
+            }
+            // chequear diagonal secundaria
+            if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+                isOver = true;
+            }
+        }
+
+        if (isOver) {
+            cout << (playerTurn ? player : bot) << " ha ganado!" << endl;
+            break;
+        } else if (moves == rows * cols - 1) {
+            cout << player << " y " << bot << " empataron." << endl;
+            isOver = true;
+        }
+
+        printBoard(board);
+        moves++;
     }
 }
 
@@ -101,6 +150,13 @@ void start() {
     // Imprimir tablero inicial
     printBoard(board);
     play(board, player, bot);
+
+    // clear
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; ++j) {
+            board[i][j] = ' ';
+        }
+    }
 }
 
 int readInt(string message) {
