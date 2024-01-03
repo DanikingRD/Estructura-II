@@ -9,6 +9,7 @@
  * FECHA: 27/12/2023 <== Fecha de realización
  */
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -28,8 +29,8 @@ double pmt(double tasa, int pagos, double capital) {
  * Formatea un double a un string con formato de moneda
  * Ejemplos:
  * 123456.789 -> $123,456.79
- *   123456.7 -> $123,456.70
- *     123456 -> $123,456.00
+ * 123456.7   -> $123,456.70
+ * 123456     -> $123,456.00
  */
 string currencyFormat(double value) {
     char format[100];
@@ -45,8 +46,10 @@ string currencyFormat(double value) {
             break;
         }
     }
-    for (int i = pos - 3; i > 0; i -= 3) {
-        output[i] = ',';
+    if (pos != -1) {
+        for (int i = pos - 3; i > 0; i -= 3) {
+            output.insert(i, ",");
+        }
     }
     output = "$" + output;
     return output;
@@ -62,16 +65,20 @@ void start() {
     double tasaMensual = tasaAnual / 12.0;
     double cuotaMensual = pmt(tasaMensual, pagos, monto);
 
-    printf("\t\t\tTabla de Amortizacion\n");
     printf("* La cuota mensual es de: %.2f\n", cuotaMensual);
-    printf("Pago  \t\t  Capital  \t\t  Interes  \t\t  Saldo\n");
+    printf("* El monto total a pagar es de: %.2f\n", cuotaMensual * pagos);
+    printf("\t\t\tTabla de Amortizacion\n");
+    printf("Pago   \t\t  Capital  \t\t  Interes  \t\t  Saldo\n");
 
     for (int i = 1; i <= pagos; i++) {
         double interes = monto * tasaMensual;
         double capital = cuotaMensual - interes;
-        monto -= capital;
-        printf("%2d \t\t %8s \t\t %8s \t\t %8s\n", i, currencyFormat(capital).c_str(),
-               currencyFormat(interes).c_str(), currencyFormat(monto).c_str());
+        monto = std::max(0.0, monto - capital);
+        string capitalStr = currencyFormat(capital);
+        string interesStr = currencyFormat(interes);
+        string montoStr = currencyFormat(monto);
+        printf("%2d \t\t %10s \t\t %10s \t\t %10s\n", i, capitalStr.c_str(), interesStr.c_str(),
+               montoStr.c_str());
     }
 }
 
