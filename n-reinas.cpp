@@ -1,12 +1,28 @@
+/*
+ * ENUNCIADO: N Reinas
+ * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
+ *              1116614 - Luis Daniel de la Cruz García
+ *              1114950 - Elian Gabriel Villegas Báez
+ *              1115808 - Edward Diaz
+ *              1113902 - Yu jhih Chen Yeh
+ *              1116238 - I Chia Chen Wang
+ * FECHA: 29/12/2023 <== Fecha de realización
+ */
+
 #include <iostream>
 
+using namespace std;
 const int n = 8; // Tamaño del tablero
 
 // Función para imprimir el tablero
 void printBoard(int board[n][n]) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            std::cout << (board[i][j] ? "Q" : ".") << " ";
+            if (board[i][j]) {
+                std::cout << "\033[1;34mQ\033[0m ";
+            } else {
+                std::cout << ". ";
+            }
         }
         std::cout << std::endl;
     }
@@ -65,14 +81,44 @@ bool solveNQueens(int board[n][n], int row) {
     return res;
 }
 
-int main() {
-    // Inicializar el tablero de 8x8
-    int board[n][n] = {0};
-
-    // Comenzar a resolver el problema de las ocho reinas
-    if (!solveNQueens(board, 0)) {
-        std::cout << "No existe solución." << std::endl;
+int readInt(string message) {
+    int value;
+    cout << message;
+    while (!(cin >> value)) {
+        cout << "\nEl valor ingresado no es válido. Ingrese nuevamente: ";
+        cin.clear();
+        cin.ignore(123, '\n');
     }
+    return value;
+}
 
+int main() {
+
+    cout << "Bienvenido al programa de N Reinas\n";
+
+    bool quit = false;
+
+    while (!quit) {
+        cout << "Ingrese: \n"
+             << "0. Para salir\n"
+             << "1. Para resolver el problema de N Reinas\n";
+
+        int option = readInt("Ingrese su opcion: ");
+
+        if (option == 0) {
+            quit = true;
+        } else if (option == 1) {
+            // Inicializar el tablero de 8x8
+            int board[n][n] = {0};
+
+            // Comenzar a resolver el problema de las ocho reinas
+            if (!solveNQueens(board, 0)) {
+                std::cout << "No existe solución." << std::endl;
+            }
+        } else {
+            cout << "Ingrese una opcion valida.\n";
+        }
+    }
+    cout << "Saliedo del programa...\n";
     return 0;
 }
