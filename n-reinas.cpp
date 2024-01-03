@@ -12,73 +12,67 @@
 #include <iostream>
 
 using namespace std;
-const int n = 8; // Tamaño del tablero
 
-// Función para imprimir el tablero
-void printBoard(int board[n][n]) {
+/*
+ * Imprime un tablero de NxN
+ */
+void printBoard(int** board, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (board[i][j]) {
-                std::cout << "\033[1;34mQ\033[0m ";
+                printf("\033[1;34mQ\033[0m ");
             } else {
-                std::cout << ". ";
+                printf(". ");
             }
         }
-        std::cout << std::endl;
+        printf("\n");
     }
-    std::cout << std::endl;
+    printf("\n");
 }
 
-// Función para verificar si es seguro colocar una reina en la posición (row, col)
-bool isSafe(int board[n][n], int row, int col) {
+/*
+ * Verifica si es seguro colocar una reina en la posición dada.
+ */
+bool isSafe(int** board, int n, int row, int col) {
     // Verificar si hay una reina en la misma columna
-    for (int i = 0; i < row; ++i) {
-        if (board[i][col]) {
-            return false;
-        }
-    }
+    int i, j;
+    // Check this row on left side
+    for (i = 0; i < col; i++)
+        if (board[row][i]) return false;
 
-    // Verificar la diagonal izquierda-arriba a derecha-abajo
-    for (int i = row, j = col; i >= 0 && j >= 0; --i, --j) {
-        if (board[i][j]) {
-            return false;
-        }
-    }
+    // Check upper diagonal on left side
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+        if (board[i][j]) return false;
 
-    // Verificar la diagonal izquierda-abajo a derecha-arriba
-    for (int i = row, j = col; i >= 0 && j < n; --i, ++j) {
-        if (board[i][j]) {
-            return false;
-        }
-    }
+    // Check lower diagonal on left side
+    for (i = row, j = col; j >= 0 && i < n; i++, j--)
+        if (board[i][j]) return false;
 
     return true;
 }
 
 // Función de backtracking para resolver el problema de las ocho reinas
-bool solveNQueens(int board[n][n], int row) {
-    if (row == n) {
+bool solveNQueens(int** board, int n, int nextCol) {
+    if (nextCol >= n) {
         // Se encontró una solución, imprimir el tablero
-        printBoard(board);
+        printBoard(board, n);
         return true;
     }
 
-    bool res = false;
-
-    for (int col = 0; col < n; ++col) {
-        if (isSafe(board, row, col)) {
+    for (int row = 0; row < n; row++) {
+        if (isSafe(board, n, row, nextCol)) {
             // Colocar una reina
-            board[row][col] = 1;
-
+            board[row][nextCol] = 1;
             // Recursivamente resolver para la siguiente fila
-            res = solveNQueens(board, row + 1) || res;
+            if (solveNQueens(board, n, nextCol + 1)) {
+                return true;
+            }
 
             // Backtrack, intentar la siguiente posición
-            board[row][col] = 0;
+            board[row][nextCol] = 0;
         }
     }
-
-    return res;
+    return false;
 }
 
 int readInt(string message) {
@@ -90,6 +84,20 @@ int readInt(string message) {
         cin.ignore(123, '\n');
     }
     return value;
+}
+
+void start() {
+    int n = readInt("Ingrese el valor de N: ");
+    int** board = new int*[n];
+    for (int i = 0; i < n; ++i) {
+        board[i] = new int[n];
+        for (int j = 0; j < n; ++j) {
+            board[i][j] = 0;
+        }
+    }
+    if (!solveNQueens(board, n, 0)) {
+        cout << "No se encontró solución.\n";
+    }
 }
 
 int main() {
@@ -108,13 +116,7 @@ int main() {
         if (option == 0) {
             quit = true;
         } else if (option == 1) {
-            // Inicializar el tablero de 8x8
-            int board[n][n] = {0};
-
-            // Comenzar a resolver el problema de las ocho reinas
-            if (!solveNQueens(board, 0)) {
-                std::cout << "No existe solución." << std::endl;
-            }
+            start();
         } else {
             cout << "Ingrese una opcion valida.\n";
         }
