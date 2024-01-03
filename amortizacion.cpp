@@ -30,7 +30,6 @@ double pmt(double tasa, int pagos, double capital) {
  * Ejemplos:
  * 123456.789 -> $123,456.79
  * 123456.7   -> $123,456.70
- * 123456     -> $123,456.00
  */
 string currencyFormat(double value) {
     char format[100];
@@ -64,9 +63,14 @@ void start() {
     double pagos = readDouble("Ingrese el numero de pagos o cuotas: (en meses): ");
     double tasaMensual = tasaAnual / 12.0;
     double cuotaMensual = pmt(tasaMensual, pagos, monto);
+    double interesTotal = cuotaMensual * pagos - monto;
 
-    printf("* La cuota mensual es de: %.2f\n", cuotaMensual);
-    printf("* El monto total a pagar es de: %.2f\n", cuotaMensual * pagos);
+    printf("\n");
+    printf("* La cuota mensual es de: %s\n", currencyFormat(cuotaMensual).c_str());
+    printf("* El interes total a pagar es de: %s\n", currencyFormat(interesTotal).c_str());
+    printf("* El monto total a pagar es de: %s\n", currencyFormat(cuotaMensual * pagos).c_str());
+    printf("\n");
+
     printf("\t\t\tTabla de Amortizacion\n");
     printf("Pago   \t\t  Capital  \t\t  Interes  \t\t  Saldo\n");
 
