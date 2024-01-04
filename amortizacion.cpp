@@ -54,12 +54,34 @@ string currencyFormat(double value) {
     return output;
 }
 
+/**
+ * Lee el porcentaje.
+ */
+double readPercentage(std::string message) {
+    double out = 0;
+
+    while (true) {
+        cout << message;
+        string input;
+        cin >> input;
+        if (input[input.length() - 1] == '%') {
+            input = input.substr(0, input.length() - 1);
+        }
+
+        try {
+            out = stod(input);
+            break;
+        } catch (const std::exception& e) {
+            cout << "El valor ingresado no es válido.\n";
+        }
+    }
+
+    return out / 100;
+}
 void start() {
     // monto total del prestamo
     double monto = readDouble("Ingrese el monto del prestamo: ");
-    double tasaAnual = readDouble("Ingrese la tasa de interes anual (en porcentaje): ");
-    // convertir tasa anual a porcentaje ej 10% -> 0.1
-    tasaAnual /= 100.0;
+    double tasaAnual = readPercentage("Ingrese la tasa de interes anual: ");
     double pagos = readDouble("Ingrese el numero de pagos o cuotas: (en meses): ");
     double tasaMensual = tasaAnual / 12.0;
     double cuotaMensual = pmt(tasaMensual, pagos, monto);
