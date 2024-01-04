@@ -1,3 +1,14 @@
+/*
+ * ENUNCIADO: Jugadas de la loto
+ * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
+ *              1116614 - Luis Daniel de la Cruz García
+ *              1114950 - Elian Gabriel Villegas Báez
+ *              1115808 - Edward Diaz
+ *              1113902 - Yu jhih Chen Yeh
+ *              1116238 - I Chia Chen Wang
+ * FECHA: 3/1/2023 <== Fecha de realización
+ */
+
 #include <iostream>
 
 const int n = 38;
