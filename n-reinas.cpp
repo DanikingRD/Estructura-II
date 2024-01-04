@@ -56,7 +56,7 @@ int solveNQueens(int** board, int n, int nextCol) {
 
     if (nextCol >= n) {
         // Se encontró una solución, imprimir el tablero
-        cout << "Solución #" << ++solutionCount << ":\n";
+        // cout << "Solución #" << ++solutionCount << ":\n";
         printBoard(board, n);
         return solutionCount;
     }
