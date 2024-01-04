@@ -10,39 +10,22 @@
  */
 
 #include <iostream>
-
 using namespace std;
 
-const int rows = 3;
-const int cols = 3;
-
-int readInt(string message);
-
-// clang-format off
-char board[rows][cols] = {
-    {' ', ' ', ' '},
-    {' ', ' ', ' '},
-    {' ', ' ', ' '}
-};
-// clang-format on
-
-/*
- * Imprime el tablero
- */
-void printBoard(char board[rows][cols]) {
+void printBoard(int* board) {
     cout << "-------------" << endl;
-    for (int i = 0; i < rows; i++) {
+    int aux = 0;
+    for (int i = 0; i < 3; i++) {
         cout << "| ";
-        for (int j = 0; j < cols; j++) {
-            char c = board[i][j];
-            if (c == 'X') {
-                cout << "\033[1;31m" << c << "\033[0m | ";
-            } else if (c == 'O') {
-                cout << "\033[1;34m" << c << "\033[0m | ";
+        for (int j = 0; j < 3; j++) {
+            if (board[aux] == -1) {
+                cout << "\033[1;31m" << 'X' << "\033[0m | ";
+            } else if (board[aux] == 1) {
+                cout << "\033[1;34m" << 'O' << "\033[0m | ";
             } else {
-                // imprimir el numero de la casilla a color
-                cout << i * 3 + j + 1 << " | ";
+                cout << aux + 1 << " | ";
             }
+            aux++;
         }
         cout << endl;
         cout << "-------------" << endl;
@@ -50,159 +33,86 @@ void printBoard(char board[rows][cols]) {
 }
 
 /*
- * Genera un numero aleatorio entre `min` y `max` inclusivos
+ * Determina si un jugador ha ganado.
+ * Retorna 0 si no hay ganador, 1 si gana la maquina, -1 si gana el jugador.
  */
-int genRange(int min, int max) { return min + (rand() % max); }
+int checkWin(int* board) {
+    // clang-format off
+    const int POSSIBLE_WIN_MOVES[8][3] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+                                            {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+                                            {0, 4, 8}, {2, 4, 6}};
+    // clang-format on
 
-bool isOcuppied(int pos) {
-    int row = (pos - 1) / 3;
-    int col = (pos - 1) % 3;
-    return board[row][col] != ' ';
+    for (int i = 0; i < 8; i++) {
+        int row = POSSIBLE_WIN_MOVES[i][0];
+        int column = POSSIBLE_WIN_MOVES[i][1];
+        int diagonal = POSSIBLE_WIN_MOVES[i][2];
+        // Si el valor de una casilla es 0, entonces esta vacia
+        // Si el valor en la misma casilla de fila, columna y diagonal es igual, entonces hay un
+        // ganador
+        if (board[row] != 0 && board[row] == board[column] && board[column] == board[diagonal]) {
+            return board[diagonal];
+        }
+    }
+    return 0;
 }
 
-int readPos() {
-    int pos = readInt("Ingrese su jugada: ");
-    while (pos < 1 || pos > 9 || isOcuppied(pos)) {
-        cout << "La posicion ingresada no es valida. Ingrese nuevamente: ";
-        pos = readInt("Ingrese su jugada: ");
-    }
-    return pos;
-}
+/*
+ * El algoritmo minimax es un algoritmo recursivo que se utiliza para elegir un movimiento óptimo
+ * para un jugador, suponiendo que el oponente tambien está jugando óptimamente.
+ * Evaluacion:
+ *  - -1 gana min (jugador)
+ *  - 0 empate
+ *  - 1 gana max (maquina)
+ */
+int minimax(int* board, int player) {
+    int winner = checkWin(board);
 
-// given a position,
-// checks if it wins
-bool wins(int pos) {
-    int row = (pos - 1) / 3;
-    int col = (pos - 1) % 3;
-    // check row
-    if (board[row][0] != ' ' && board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
-        return true;
-    }
-    // check col
-    if (board[0][col] != ' ' && board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
-        return true;
-    }
-    // check diagonal
-    if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
-        return true;
-    }
-    // check diagonal
-    if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
-        return true;
-    }
-    return false;
-}
+    if (winner != 0) return winner * player;
 
-void setPlay(string name, int pos, char character) {
-    int row = (pos - 1) / 3;
-    int col = (pos - 1) % 3;
-    board[row][col] = character;
-    cout << " -> " << name << " jugo en la posicion " << pos << endl;
-}
+    int move = -1;
+    int score = -2;
 
-int generatePos() {
-    // check if its possible to win
     for (int i = 0; i < 9; i++) {
-
-        int row = i / 3;
-        int col = i % 3;
-
-        if (board[row][col] == ' ') {
-            board[row][col] = 'O';
-            if (wins(i + 1)) {
-                board[row][col] = ' ';
-                return i + 1;
+        if (board[i] == 0) {
+            // Simular jugadas de este jugador
+            board[i] = player;
+            int thisScore = -minimax(board, player * -1);
+            if (thisScore > score) {
+                score = thisScore;
+                move = i;
             }
-            board[row][col] = ' ';
-        }
-
-        // check if its possible to block a player that will win
-        if (board[row][col] == ' ') {
-            board[row][col] = 'X';
-            if (wins(i + 1)) {
-                board[row][col] = 'O';
-                return i + 1;
-            }
-            board[row][col] = ' ';
+            board[i] = 0;
         }
     }
-    // generate a random pos that is not ocuppied
-    int pos = genRange(1, 9);
-    while (isOcuppied(pos)) {
-        pos = genRange(1, 9);
-    }
-    return pos;
+    if (move == -1) return 0;
+
+    return score;
 }
 
-void play(string player, string bot) {
-
-    // preguntar quien empieza
-    cout << "Quien empieza?" << endl;
-    cout << "0. " << player << endl;
-    cout << "1. " << bot << endl;
-
-    int option = readInt("Opcion: ");
-    while (option != 0 && option != 1) {
-        cout << "Ingrese una opcion valida." << endl;
-        option = readInt("Opcion: ");
-    }
-
-    int moves = 0;
-    bool isOver = false;
-    bool playerTurn = option == 0;
-
-    while (!isOver) {
-
-        // anunciar turno
-        cout << "Turno de " << (playerTurn ? player : bot) << endl;
-
-        int pos;
-        if (playerTurn) {
-            pos = readPos();
-        } else {
-            // turno de la maquina
-            pos = generatePos();
-        }
-
-        setPlay(playerTurn ? player : bot, pos, playerTurn ? 'X' : 'O');
-        isOver = wins(pos);
-
-        if (isOver) {
-            cout << (playerTurn ? player : bot) << " ha ganado!" << endl;
-            isOver = true;
-        } else if (moves == rows * cols - 1) {
-            cout << player << " y " << bot << " empataron." << endl;
-            isOver = true;
-        }
-
-        printBoard(board);
-        moves++;
-        playerTurn = !playerTurn;
-    }
-}
-
-void start() {
-
-    // Ingresar nombres
-    string player, bot;
-    cout << "Ingrese su nombre: ";
-    cin >> player;
-    cout << "Ingrese el nombre de la maquina: ";
-    cin >> bot;
-
-    cout << " -> " << player << " es X" << endl;
-    cout << " -> " << bot << " es O" << endl;
-
-    // Imprimir tablero inicial
-    printBoard(board);
-    play(player, bot);
-
-    // clear
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; ++j) {
-            board[i][j] = ' ';
+/*
+ * Selecciona el mejor movimiento para la maquina.
+ *
+ * Esto se hace simulando todos los posibles siguientes movimientos de la maquina
+ * y revisando con cual de ellos el oponente tiene la menor probabilidad de ganar
+ * haciendo uso del algoritmo minimax para evaluar las jugadas del oponente.
+ */
+int findBestMove(int* board) {
+    int move = -1;
+    int score = -2; // Lowest possible score.
+    for (int i = 0; i < 9; i++) {
+        if (board[i] == 0) { // Casilla vacia
+            // Simular jugadas
+            board[i] = 1;
+            int tempScore = -minimax(board, -1);
+            board[i] = 0;
+            if (tempScore > score) {
+                score = tempScore;
+                move = i;
+            }
         }
     }
+    return move;
 }
 
 int readInt(string message) {
@@ -216,25 +126,79 @@ int readInt(string message) {
     return value;
 }
 
-int main(void) {
-    srand(time(NULL));
-    cout << "Bienvenidos a Tic Tac Toe contra la maquina." << endl;
+/*
+ * Evaluacion del ganador:
+ * -1 -> Gana el jugador
+ * 0 -> Empate
+ * 1 -> Gana la maquina
+ */
+void play(int* board) {
+    cout << "Eligen quien inicia el juego: \n"
+         << "0. Tu\n"
+         << "1. La maquina\n";
+
+    int option = readInt("Ingrese su opcion: ");
+
+    int moves = 0;
+    switch (option) {
+    case 0:
+        cout << "Inicia el jugador." << endl;
+        break;
+    case 1:
+        cout << "Inicia la maquina." << endl;
+        board[findBestMove(board)] = 1;
+        moves++;
+        cout << "\nTablero despues del movimiento de la maquina:\n";
+        printBoard(board);
+        break;
+
+    default:
+        cout << "Opcion invalida. Inicia el jugador." << endl;
+        break;
+    }
 
     bool quit = false;
     while (!quit) {
-        cout << "Presione:"
-             << "\n0. Para salir"
-             << "\n1. Para jugar contra la maquina" << endl;
-
-        int option = readInt("Opcion: ");
-
-        if (option == 0) {
-            cout << "Gracias por jugar!" << endl;
-            quit = true;
-        } else if (option == 1) {
-            start();
+        int move = readInt("Ingrese su movimiento: ");
+        // La casilla no esta ocupada
+        if (board[move - 1] == 0) {
+            // turno del jugador
+            if (!quit) {
+                board[move - 1] = -1; // La casilla ahora esta ocupada por el jugador
+                moves++;
+                cout << "\nTablero despues de su movimiento:\n";
+                printBoard(board);
+            }
+            quit = checkWin(board) != 0 || moves == 9;
+            if (!quit) {
+                // turno de la maquina
+                board[findBestMove(board)] = 1;
+                cout << "\nTablero despues del movimiento de la maquina:\n";
+                printBoard(board);
+                moves++;
+            }
+            quit = checkWin(board) != 0 || moves == 9;
         } else {
-            cout << "Ingrese una opcion valida." << endl;
+            cout << "Movimiento invalido. Intente de nuevo." << endl;
         }
+    }
+}
+
+int main(void) {
+    cout << "Bienvenidos a Tic Tac Toe contra la maquina." << endl;
+    int board[9] = {0};
+    printBoard(board);
+    play(board);
+
+    switch (checkWin(board)) {
+    case 0:
+        cout << "Empate." << endl;
+        break;
+    case 1:
+        cout << "Perdiste." << endl;
+        break;
+    case -1:
+        cout << "Felicidades, lograste lo imposible o (encontraste un bug)." << endl;
+        break;
     }
 }
