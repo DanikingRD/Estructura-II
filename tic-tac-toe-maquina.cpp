@@ -99,6 +99,7 @@ void setPlay(string name, int pos, char character) {
     board[row][col] = character;
     cout << " -> " << name << " jugo en la posicion " << pos << endl;
 }
+
 int generatePos() {
     // check if its possible to win
     for (int i = 0; i < 9; i++) {
@@ -133,11 +134,26 @@ int generatePos() {
     return pos;
 }
 
-void play(char board[rows][cols], string player, string bot) {
+void play(string player, string bot) {
+
+    // preguntar quien empieza
+    cout << "Quien empieza?" << endl;
+    cout << "0. " << player << endl;
+    cout << "1. " << bot << endl;
+
+    int option = readInt("Opcion: ");
+    while (option != 0 && option != 1) {
+        cout << "Ingrese una opcion valida." << endl;
+        option = readInt("Opcion: ");
+    }
+
     int moves = 0;
     bool isOver = false;
+    bool playerTurn = option == 0;
+
     while (!isOver) {
-        bool playerTurn = moves % 2 == 0;
+
+        // anunciar turno
         cout << "Turno de " << (playerTurn ? player : bot) << endl;
 
         int pos;
@@ -161,6 +177,7 @@ void play(char board[rows][cols], string player, string bot) {
 
         printBoard(board);
         moves++;
+        playerTurn = !playerTurn;
     }
 }
 
@@ -178,7 +195,7 @@ void start() {
 
     // Imprimir tablero inicial
     printBoard(board);
-    play(board, player, bot);
+    play(player, bot);
 
     // clear
     for (int i = 0; i < rows; i++) {
