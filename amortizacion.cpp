@@ -32,7 +32,7 @@ double pmt(double tasa, int pagos, double capital) {
  * 123456.7   -> $123,456.70
  */
 string currencyFormat(double value) {
-    char format[100];
+    char format[32];
     // TODO: maybe use the c++ way but it sucks. This is easier and requires no imports.
     snprintf(format, sizeof(format), "%.2f", value);
 
@@ -71,7 +71,7 @@ void start() {
     printf("* El monto total a pagar es de: %s\n", currencyFormat(cuotaMensual * pagos).c_str());
     printf("\n");
 
-    printf("\t\t\tTabla de Amortizacion\n");
+    printf("\t\t\tTabla de Amortizacion\n\n");
     printf("Pago   \t\t  Capital  \t\t  Interes  \t\t  Saldo\n");
 
     for (int i = 1; i <= pagos; i++) {
