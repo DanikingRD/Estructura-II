@@ -10,33 +10,49 @@
  */
 
 #include <iostream>
+#include <time.h>
 
-const int n = 38;
-const int k = 6;
+const int cantidadJugadas = 38;
+const int cantidadGrupo = 6;
 
-void generateCombinations(int numbers[], int start, int remaining, int result[], int resultIndex) {
-    if (remaining == 0) {
-        for (int i = 0; i < k; ++i) {
-            std::cout << result[i] << " ";
-        }
-        std::cout << std::endl;
+void printArray(int* arr, int n) {
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void jugadaLoteria(int* posiblesJugadas, int jugadaMasAlta, int jugadaActual, int* jugada,
+                   int indiceGrupo) {
+    if (indiceGrupo >= cantidadGrupo) {
+        printArray(jugada, cantidadGrupo);
         return;
     }
-
-    for (int i = start; i < n; ++i) {
-        result[resultIndex] = numbers[i];
-        generateCombinations(numbers, i + 1, remaining - 1, result, resultIndex + 1);
+    if (jugadaActual >= jugadaMasAlta) {
+        return;
     }
+    jugada[indiceGrupo] = posiblesJugadas[jugadaActual];
+    jugadaLoteria(posiblesJugadas, jugadaMasAlta, jugadaActual + 1, jugada, indiceGrupo + 1);
+    jugadaLoteria(posiblesJugadas, jugadaMasAlta, jugadaActual + 1, jugada, indiceGrupo);
 }
 
 int main() {
-    int numbers[n];
-    for (int i = 0; i < n; ++i) {
-        numbers[i] = i + 1;
-    }
 
-    int result[k];
-    generateCombinations(numbers, 0, k, result, 0);
+    struct timespec start, finish;
+    double elapsed;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    int arr[cantidadJugadas];
+    for (int i = 0; i < cantidadJugadas; i++) {
+        arr[i] = i + 1;
+    }
+    int result[cantidadGrupo];
+    jugadaLoteria(arr, cantidadJugadas, 0, result, 0);
+
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    elapsed = (finish.tv_sec - start.tv_sec);
+    elapsed += (finish.tv_nsec - start.tv_nsec) * 1e-9;
+    std::cout << "Tiempo de ejecución: " << elapsed << " segundos." << std::endl;
 
     return 0;
 }
