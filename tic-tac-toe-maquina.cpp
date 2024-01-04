@@ -69,7 +69,63 @@ int readPos() {
     return pos;
 }
 
+// given a position,
+// checks if it wins
+bool wins(int pos) {
+    int row = (pos - 1) / 3;
+    int col = (pos - 1) % 3;
+    // check row
+    if (board[row][0] != ' ' && board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
+        return true;
+    }
+    // check col
+    if (board[0][col] != ' ' && board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
+        return true;
+    }
+    // check diagonal
+    if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+        return true;
+    }
+    // check diagonal
+    if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+        return true;
+    }
+    return false;
+}
+
+void setPlay(string name, int pos, char character) {
+    int row = (pos - 1) / 3;
+    int col = (pos - 1) % 3;
+    board[row][col] = character;
+    cout << " -> " << name << " jugo en la posicion " << pos << endl;
+}
 int generatePos() {
+    // check if its possible to win
+    for (int i = 0; i < 9; i++) {
+
+        int row = i / 3;
+        int col = i % 3;
+
+        if (board[row][col] == ' ') {
+            board[row][col] = 'O';
+            if (wins(i + 1)) {
+                board[row][col] = ' ';
+                return i + 1;
+            }
+            board[row][col] = ' ';
+        }
+
+        // check if its possible to block a player that will win
+        if (board[row][col] == ' ') {
+            board[row][col] = 'X';
+            if (wins(i + 1)) {
+                board[row][col] = 'O';
+                return i + 1;
+            }
+            board[row][col] = ' ';
+        }
+    }
+    // generate a random pos that is not ocuppied
     int pos = genRange(1, 9);
     while (isOcuppied(pos)) {
         pos = genRange(1, 9);
@@ -77,19 +133,10 @@ int generatePos() {
     return pos;
 }
 
-void setPlay(string name, int pos, char player) {
-    int row = (pos - 1) / 3;
-    int col = (pos - 1) % 3;
-    board[row][col] = player;
-    // anunciar jugada
-    cout << " -> " << name << " jugó en la casilla " << pos << endl;
-}
-
 void play(char board[rows][cols], string player, string bot) {
     int moves = 0;
     bool isOver = false;
     while (!isOver) {
-
         bool playerTurn = moves % 2 == 0;
         cout << "Turno de " << (playerTurn ? player : bot) << endl;
 
@@ -102,29 +149,11 @@ void play(char board[rows][cols], string player, string bot) {
         }
 
         setPlay(playerTurn ? player : bot, pos, playerTurn ? 'X' : 'O');
-
-        for (int i = 0; i < rows; i++) {
-            // chequear filas
-            if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
-                isOver = true;
-            }
-            // chequear columnas
-            if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-                isOver = true;
-            }
-            // chequear diagonal principal
-            if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
-                isOver = true;
-            }
-            // chequear diagonal secundaria
-            if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
-                isOver = true;
-            }
-        }
+        isOver = wins(pos);
 
         if (isOver) {
             cout << (playerTurn ? player : bot) << " ha ganado!" << endl;
-            break;
+            isOver = true;
         } else if (moves == rows * cols - 1) {
             cout << player << " y " << bot << " empataron." << endl;
             isOver = true;
@@ -171,7 +200,7 @@ int readInt(string message) {
 }
 
 int main(void) {
-
+    srand(time(NULL));
     cout << "Bienvenidos a Tic Tac Toe contra la maquina." << endl;
 
     bool quit = false;
