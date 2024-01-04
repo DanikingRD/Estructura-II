@@ -8,7 +8,6 @@
  *              1116238 - I Chia Chen Wang
  * FECHA: 29/12/2023 <== Fecha de realización
  */
-
 #include <iostream>
 
 using namespace std;
@@ -20,9 +19,9 @@ void printBoard(int** board, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (board[i][j]) {
-                printf("\033[1;34mQ\033[0m ");
+                printf("\033[1;34mQ\033[0m "); // Imprimir 'Q' en azul si hay una reina
             } else {
-                printf(". ");
+                printf(". "); // Imprimir '.' si la casilla está vacía
             }
         }
         printf("\n");
@@ -36,27 +35,30 @@ void printBoard(int** board, int n) {
 bool isSafe(int** board, int n, int row, int col) {
     // Verificar si hay una reina en la misma columna
     int i, j;
-    // Check this row on left side
+    // Comprobar esta fila en el lado izquierdo
     for (i = 0; i < col; i++)
         if (board[row][i]) return false;
 
-    // Check upper diagonal on left side
+    // Comprobar la diagonal superior en el lado izquierdo
     for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
         if (board[i][j]) return false;
 
-    // Check lower diagonal on left side
+    // Comprobar la diagonal inferior en el lado izquierdo
     for (i = row, j = col; j >= 0 && i < n; i++, j--)
         if (board[i][j]) return false;
 
     return true;
 }
 
-// Función de backtracking para resolver el problema de las ocho reinas
-bool solveNQueens(int** board, int n, int nextCol) {
+// Función de backtracking para resolver el problema de las N reinas
+int solveNQueens(int** board, int n, int nextCol) {
+    static int solutionCount = 0; // Contador de soluciones
+
     if (nextCol >= n) {
         // Se encontró una solución, imprimir el tablero
+        cout << "Solución #" << ++solutionCount << ":\n";
         printBoard(board, n);
-        return true;
+        return solutionCount;
     }
 
     for (int row = 0; row < n; row++) {
@@ -64,17 +66,16 @@ bool solveNQueens(int** board, int n, int nextCol) {
             // Colocar una reina
             board[row][nextCol] = 1;
             // Recursivamente resolver para la siguiente fila
-            if (solveNQueens(board, n, nextCol + 1)) {
-                return true;
-            }
-
+            solveNQueens(board, n, nextCol + 1);
             // Backtrack, intentar la siguiente posición
             board[row][nextCol] = 0;
         }
     }
-    return false;
+
+    return solutionCount;
 }
 
+// Función para leer un entero desde la entrada estándar con manejo de errores
 int readInt(string message) {
     int value;
     cout << message;
@@ -86,22 +87,28 @@ int readInt(string message) {
     return value;
 }
 
+// Función principal para iniciar el programa
 void start() {
     int n = readInt("Ingrese el valor de N: ");
     int** board = new int*[n];
     for (int i = 0; i < n; ++i) {
         board[i] = new int[n];
         for (int j = 0; j < n; ++j) {
-            board[i][j] = 0;
+            board[i][j] = 0; // Inicializar el tablero con ceros
         }
     }
-    if (!solveNQueens(board, n, 0)) {
-        cout << "No se encontró solución.\n";
+
+    int totalSolutions = solveNQueens(board, n, 0);
+
+    if (totalSolutions == 0) {
+        cout << "No se encontró ninguna solución.\n";
+    } else {
+        cout << "Se encontraron " << totalSolutions << " soluciones.\n";
     }
 }
 
+// Función principal
 int main() {
-
     cout << "Bienvenido al programa de N Reinas\n";
 
     bool quit = false;
@@ -121,6 +128,6 @@ int main() {
             cout << "Ingrese una opcion valida.\n";
         }
     }
-    cout << "Saliedo del programa...\n";
+    cout << "Saliendo del programa...\n";
     return 0;
 }
