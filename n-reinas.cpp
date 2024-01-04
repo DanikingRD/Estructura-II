@@ -52,7 +52,7 @@ bool isSafe(int** board, int n, int row, int col) {
 
 // Función de backtracking para resolver el problema de las N reinas
 int solveNQueens(int** board, int n, int nextCol) {
-    static int solutionCount = 0; // Contador de soluciones
+    int solutionCount = 0; // Contador de soluciones
 
     if (nextCol >= n) {
         // Se encontró una solución, imprimir el tablero

@@ -137,7 +137,10 @@ void play(int* board) {
          << "0. Tu\n"
          << "1. La maquina\n";
 
-    int option = readInt("Ingrese su opcion: ");
+    int option = -1;
+    while (option != 0 && option != 1) {
+        option = readInt("Ingrese su opcion: ");
+    }
 
     int moves = 0;
     switch (option) {
@@ -160,6 +163,7 @@ void play(int* board) {
     bool quit = false;
     while (!quit) {
         int move = readInt("Ingrese su movimiento: ");
+
         // La casilla no esta ocupada
         if (board[move - 1] == 0) {
             // turno del jugador
